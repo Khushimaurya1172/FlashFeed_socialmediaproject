@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to NeonSocial</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            padding: 60px 20px 40px;
+            background-color: #1a1a1a;
+            border-bottom: 2px solid #ff00ff;
+            box-shadow: 0 0 15px #00fff7;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            color: #00fff7;
+            text-shadow: 0 0 10px #00fff7;
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: #ccc;
+        }
+
+        .btn-container {
+            margin-top: 40px;
+        }
+
+        a.button {
+            text-decoration: none;
+            background-color: #ff00ff;
+            color: white;
+            padding: 15px 30px;
+            margin: 15px;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 0 12px #ff00ff;
+            transition: background-color 0.3s ease;
+        }
+
+        a.button:hover {
+            background-color: #00fff7;
+            box-shadow: 0 0 12px #00fff7;
+        }
+
+        footer {
+            margin-top: 60px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1> Welcome to FlashFeed</h1>
+        <p>✨ Connect. Share. Shine. ✨</p>
+
+        <div class="btn-container">
+            <a href="{% url 'signup' %}" class="button">Sign Up</a>
+            <a href="{% url 'login' %}" class="button">Log In</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Made with ❤️ by Khushi | © 2025 NeonSocial</p>
+    </footer>
+
+</body>
+</html>

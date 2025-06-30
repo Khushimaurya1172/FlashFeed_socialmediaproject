@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile_user.username }}'s Profile</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: #1a1a1a;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff00ff;
+            box-shadow: 0 0 10px #00fff7;
+        }
+
+        nav a {
+            color: #00fff7;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 12px;
+        }
+
+        nav a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 8px #ff00ff;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-header img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 3px solid #ff00ff;
+            box-shadow: 0 0 10px #00fff7;
+            object-fit: cover;
+        }
+
+        .profile-header h2 {
+            color: #00fff7;
+            margin: 15px 0 8px;
+        }
+
+        .profile-header p {
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .edit-profile-btn {
+            background: #00fff7;
+            color: #0d0d0d;
+            padding: 8px 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .edit-profile-btn:hover {
+            background: #ff00ff;
+            color: white;
+        }
+
+        .posts-section {
+            margin-top: 40px;
+        }
+
+        .posts-section h3 {
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            color: #00fff7;
+        }
+
+        .post {
+            background: #1e1e1e;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 10px #bfddea;
+        }
+
+        .post img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .post small {
+            display: block;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .logout-btn {
+            background-color: #333;
+            color: #fff;
+            margin-left: 10px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff00ff;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div><a href="{% url 'feed' %}">🌟 FlashFeed</a></div>
+        <div>
+            <a href="{% url 'profile' user.username %}">Profile</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-header">
+            <img src="{{ profile_user.profile.image.url }}" alt="Profile Picture">
+            <h2>{{ profile_user.username }}</h2>
+            <p>{{ profile_user.profile.bio|default:"No bio added yet." }}</p>
+
+            {% if user == profile_user %}
+                <a href="{% url 'edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+            {% endif %}
+        </div>
+
+        <div class="posts-section">
+            <h3>{{ profile_user.username }}'s Posts</h3>
+            {% for post in posts %}
+                <div class="post">
+                    <p>{{ post.content }}</p>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post Image">
+                    {% endif %}
+                    <small>{{ post.created_at }}</small>
+                </div>
+            {% empty %}
+                <p>No posts yet!</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

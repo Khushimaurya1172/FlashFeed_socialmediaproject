@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NeonSocial - Feed</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #1a1a1a;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff00ff;
+            box-shadow: 0 0 10px #00fff7;
+        }
+        nav a {
+            color: #00fff7;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 12px;
+        }
+        nav a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 8px #e7bae7;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        h2 {
+            color: #00fff7;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        form {
+            background: #1f1f1f;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 12px #e7bae7;
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #383636;
+            color: #efe7e7;
+            border-radius: 5px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #00fff7;
+            color: #0d0d0d;
+            padding: 10px 20px;
+            border: none;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff00ff;
+            color: white;
+        }
+        .post {
+            background: #1e1e1e;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 12px #bfddea;
+        }
+        .post strong a {
+            color: #00fff7;
+            text-decoration: none;
+        }
+        .post p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .post img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .actions form,
+        .actions a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            color: #c469c4;
+            transition: 0.2s;
+        }
+        .actions button {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            color: inherit;
+            cursor: pointer;
+        }
+        .actions button:hover,
+        .actions a:hover {
+            color: #00fff7;
+        }
+        .logout-btn {
+            background-color: #333;
+            color: #fff;
+            margin-left: 10px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+        }
+        .logout-btn:hover {
+            background-color: #ff00ff;
+        }
+        .comment-input {
+            width: 100%;
+            padding: 8px 10px;
+            background-color: #2a2a2a;
+            border: none;
+            border-radius: 5px;
+            color: #ece6e6;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        .comments {
+            margin-top: 10px;
+            padding-left: 10px;
+            
+        }
+        .comments p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .comments strong {
+            color: #00fff7;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div><a href="{% url 'feed' %}">🌟 FlashFeed</a></div>
+        <div>
+            <a href="{% url 'profile' user.username %}">Profile</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Welcome, {{ user.username }}!</h2>
+
+        <!-- Post Upload Form -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ post_form.as_p }}
+            <button type="submit">Post</button>
+        </form>
+
+        <!-- Feed -->
+        {% for post in posts %}
+        <div class="post">
+            <strong><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></strong>
+            <p>{{ post.content }}</p>
+            <small>{{ post.created_at }}</small>
+
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image">
+            {% endif %}
+
+            <div class="actions">
+                <form method="post" action="{% url 'like_post' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit">
+                        {% if post.is_liked %}
+                            ❤️ {{ post.likes.count }}
+                        {% else %}
+                            🤍 {{ post.likes.count }}
+                        {% endif %}
+                    </button>
+                </form>
+
+                <a href="#">💬 {{ post.comments.count }}</a>
+
+                {% if post.user == user %}
+                    <a href="{% url 'edit_post' post.id %}">✏️</a>
+                    <a href="{% url 'delete_post' post.id %}">🗑️</a>
+                {% endif %}
+            </div>
+
+            <!-- Show Comments -->
+            <div class="comments">
+                {% for comment in post.comments.all %}
+                <p><strong>{{ comment.user.username }}</strong>: {{ comment.text }}</p>
+                {% empty %}
+                <p>No comments yet.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Comment Form -->
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                {{ comment_form.text }}
+                <button type="submit">Comment</button>
+            </form>
+        </div>
+        {% empty %}
+            <p>No posts yet. Be the first to post something!</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Post - NeonSocial</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #1a1a1a;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff00ff;
+            box-shadow: 0 0 10px #00fff7;
+        }
+        nav a {
+            color: #00fff7;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 12px;
+        }
+        nav a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 8px #ff00ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #111;
+        }
+        h2 {
+            text-align: center;
+            color: #00fff7;
+            margin-bottom: 25px;
+        }
+        textarea {
+            width: 100%;
+            background-color: #2b2b2b;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 15px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #00fff7;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #000;
+            margin-top: 20px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #ff00ff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div><a href="{% url 'feed' %}">🌟 NeonSocial</a></div>
+        <div>
+            <a href="{% url 'profile' user.username %}">Profile</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Edit Post</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Update</button>
+        </form>
+    </div>
+</body>
+</html>
